@@ -15,6 +15,7 @@
 # in the templates via {{ site.myvariable }}.
 title: Notes
 email: damien@plenard.me
+url: https://damien.plenard.me
 description: Notes about my side projects.
 twitter_username: dam0un
 github_username: damoun
