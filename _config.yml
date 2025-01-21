@@ -17,7 +17,6 @@ title: Notes
 email: damien@plenard.me
 url: https://damien.plenard.me
 description: Notes about my side projects.
-twitter_username: dam0un
 github_username: damoun
 minimal_mistakes_skin: default
 search: true
@@ -58,7 +57,7 @@ plugins:
 author:
   name: "Damien Plenard"
   avatar: "/assets/images/bio-photo.png"
-  bio: "Dad 👶 Neurodivergent 🧠 Site Reliability Engineer at @<a href=\"https://mollie.com\">Mollie</a> 💻 Twitch Affiliate 🎥 Pokémon trainer 👾 Octoling worker at Grizzco Industries 🐙 Also French 🇫🇷"
+  bio: "Dad 👶 Neurodivergent 🧠 Senior Site Reliability Engineer at @<a href=\"https://camunda.com\">Camunda</a> 💻 Twitch Affiliate 🎥 Pokémon trainer 👾 Octoling worker at Grizzco Industries 🐙 Also French 🇫🇷"
   location: "Amsterdam, NL"
   links:
     - label: "Email"
