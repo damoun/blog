@@ -3,16 +3,14 @@ permalink: /about/
 title: "About"
 ---
 
-Hello there! 👋 I'm Damien Plénard, a Site Reliability Engineer currently spearheading transformative initiatives at Mollie in Amsterdam, Netherlands. With over a decade of experience in the tech realm, I specialize in orchestrating seamless transitions from on-premise infrastructure to the cloud, particularly driving the migration to Google Cloud Platform.
+Hey, I'm Damien. French, but I've been living in Amsterdam since 2015.
 
-In my current role at Mollie, I take pride in owning the On-Premises infrastructure, ensuring its efficiency, and automating server onboarding and maintenance using Ansible. I'm deeply involved in the migration process, employing tools like Terraform and Helm, and implementing Service Level Objective (SLO) frameworks for enhanced performance.
+By day I'm a Senior Platform Engineer at Kaiko.ai, working on the infrastructure behind healthcare AI products. Kubernetes, multi-cloud, the kind of stuff that quietly keeps things running. I've been doing platform and SRE work for about a decade. If you want the full timeline, it's all at [damien.plenard.me/resume](https://damien.plenard.me/resume).
 
-Prior to Mollie, I made significant contributions as a Site Reliability Engineer at Veepee, where I delivered observability solutions for the platform domain. My responsibilities included maintaining Elasticsearch clusters, implementing SaaS platforms for monitoring using Nomad and Docker, and enhancing incident management workflows through automation.
+I'm neurodivergent, which shapes a lot of how I work and think. The deep dives, the strong opinions, the need to fully understand something before I feel okay touching it.
 
-Before my time at Veepee, I honed my skills as a Unix System Engineer at Payplug, focusing on maintaining and developing carrier billing projects. I also had the opportunity to serve as a Teaching Assistant at EPITECH, where I shared my knowledge and passion for computer engineering with aspiring minds.
+I have a thing for theme parks. Disneyland Paris is basically a regular trip at this point, and Efteling is one of my favourite places in Europe that most people outside the Netherlands don't know about. I try to visit as many parks across Europe as I can.
 
-In terms of education, I hold a Master's degree in Computer Engineering from EPITECH, and I pursued Software Engineering Technology at Beijing Jiaotong University.
+When I'm not doing that, I'm usually gaming. I have a soft spot for cozy games (Stardew Valley is a classic for a reason, Animal Crossing too), and I keep coming back to Pokemon, Zelda, and Overwatch. On the Switch I also spend way too much time on Mario Kart, Mario Party, Mario platformers, and Splatoon. On the PC side, I've put a lot of hours into Helldivers 2, Deep Rock Galactic, and Arc Raiders. I used to stream on Twitch a few times a week and somehow ended up with a couple thousand followers. That's paused for now, life got fuller.
 
-Beyond the tech realm, I'm a multifaceted individual. As a gamer and Twitch streamer with a 2000-strong following, I share my gaming experiences four times a week. Away from the screen, I'm a proud dad, plant enthusiast, and avid learner. I'm also engaged in home renovation projects and contribute as a technical advisor to my house owner association.
-
-Let's connect and explore the possibilities of technology and beyond! 🚀✨
+Speaking of which, I'm a dad. That's probably the most important thing on this page.
