@@ -18,7 +18,7 @@ email: damien@plenard.me
 url: https://damien.plenard.me
 description: Notes about my side projects.
 github_username: damoun
-minimal_mistakes_skin: default
+minimal_mistakes_skin: "dark"
 search: true
 
 # Build settings
