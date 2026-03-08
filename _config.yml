@@ -57,7 +57,7 @@ plugins:
 author:
   name: "Damien Plenard"
   avatar: "/assets/images/bio-photo.png"
-  bio: "Dad 👶 Neurodivergent 🧠 Senior Site Reliability Engineer at @<a href=\"https://camunda.com\">Camunda</a> 💻 Twitch Affiliate 🎥 Pokémon trainer 👾 Octoling worker at Grizzco Industries 🐙 Also French 🇫🇷"
+  bio: "Senior Platform Engineer at Kaiko.ai. Building healthcare AI infrastructure on Kubernetes and multi-cloud. Dad, gamer, expat, neurodivergent. Theme park enthusiast. Based in Amsterdam, NL."
   location: "Amsterdam, NL"
   links:
     - label: "Email"
@@ -69,9 +69,6 @@ author:
     - label: "Instagram"
       icon: "fab fa-fw fa-instagram"
       url: "https://instagram.com/dam0un"
-    - label: "Twitch"
-      icon: "fab fa-fw fa-twitch"
-      url: "https://twitch.tv/dam0un"
     - label: "Links"
       icon: "fas fa-fw fa-external-link-alt"
       url: "https://damoun.link"
