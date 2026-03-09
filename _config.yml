@@ -79,6 +79,17 @@ footer:
       icon: "fas fa-fw fa-info"
       url: "https://status.damoun.cloud"
 
+comments:
+  provider: "giscus"
+  giscus:
+    repo_id: "MDEwOlJlcG9zaXRvcnk0MDQ0Nzc4NDE="
+    category_name: "Comments"
+    category_id: "DIC_kwDOGBvXkc4C4CvO"
+    discussion_term: "og:title"
+    reactions_enabled: "1"
+    theme: "dark"
+    lang: "en"
+
 defaults:
   # _posts
   - scope:
