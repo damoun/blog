@@ -5,7 +5,7 @@ title: "About"
 
 Hey, I'm Damien. French, but I've been living in Amsterdam since 2015.
 
-By day I'm a Senior Platform Engineer at Kaiko.ai, working on the infrastructure behind healthcare AI products. Kubernetes, multi-cloud, the kind of stuff that quietly keeps things running. I've been doing platform and SRE work for about a decade. If you want the full timeline, it's all at [damien.plenard.me/resume](https://damien.plenard.me/resume).
+By day I'm a Senior Platform Engineer at [Kaiko.ai](https://kaiko.ai), working on the infrastructure behind healthcare AI products. Kubernetes, multi-cloud, the kind of stuff that quietly keeps things running. I've been doing platform and SRE work for about a decade. If you want the full timeline, it's all at [damien.plenard.me/resume](https://damien.plenard.me/resume).
 
 I'm neurodivergent, which shapes a lot of how I work and think. The deep dives, the strong opinions, the need to fully understand something before I feel okay touching it.
 
