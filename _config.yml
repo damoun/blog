@@ -1,5 +1,6 @@
 # Site settings
 title: Notes
+words_per_minute: 150
 title_separator: "-"
 subtitle: "Side projects & notes"
 email: damien@plenard.me
@@ -45,7 +46,7 @@ plugins:
 author:
   name: "Damien Plenard"
   avatar: "/assets/images/bio-photo.png"
-  bio: "Senior Platform Engineer at Kaiko.ai. Building healthcare AI infrastructure on Kubernetes and multi-cloud. Dad, gamer, expat, neurodivergent. Theme park enthusiast. Based in Amsterdam, NL."
+  bio: "Senior Platform Engineer at <a href='https://kaiko.ai'>Kaiko.ai</a>. Building healthcare AI infrastructure on Kubernetes and multi-cloud. Dad, gamer, expat, neurodivergent. Theme park enthusiast."
   location: "Amsterdam, NL"
   links:
     - label: "Email"
