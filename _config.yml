@@ -10,7 +10,7 @@ repository: "damoun/blog"
 github_username: damoun
 minimal_mistakes_skin: "dark"
 search: true
-enable_copy_code_button: true
+enable_copy_code_button: false
 encoding: "utf-8"
 
 # Build settings
