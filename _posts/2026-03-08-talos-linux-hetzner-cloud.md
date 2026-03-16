@@ -20,18 +20,34 @@ For my homelab/VPS setup on Hetzner Cloud, this was appealing for a specific rea
 Hetzner doesn't have Talos images in its catalog. So the workflow is:
 
 1. **Build a Talos snapshot** with Packer
-2. **Provision the cluster** with Terraform using that snapshot
+2. **Provision the infrastructure** with Terraform using that snapshot
+
+The source code for all of this lives in [damoun/terraform-hcloud-talos](https://github.com/damoun/terraform-hcloud-talos).
 
 ### Step 1: Build the Snapshot with Packer
 
-The [Talos release page](https://github.com/siderolabs/talos/releases) provides raw disk images. For Hetzner, you need the `metal-amd64` image. Packer uploads it as a snapshot:
+Talos provides pre-built images through [Image Factory](https://factory.talos.dev/), which lets you include custom extensions (WireGuard, storage drivers, etc.) in the image. Packer boots a temporary Debian server in rescue mode, writes the Talos image directly to disk, and Hetzner captures the result as a labeled snapshot:
 
 ```hcl
+variable "talos_version" {
+  default = "v1.12.4"
+}
+
+local {
+  image_url = "https://factory.talos.dev/image/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515/${var.talos_version}/hcloud-amd64.raw.xz"
+}
+
 source "hcloud" "talos" {
-  image       = "debian-12"
-  location    = "nbg1"
-  server_type = "cx22"
-  snapshot_name = "talos-v1.7.0"
+  location      = "fsn1"
+  server_type   = "cx22"
+  image         = "debian-12"
+  rescue        = "linux64"
+  ssh_username  = "root"
+  snapshot_labels = {
+    type    = "talos"
+    version = var.talos_version
+  }
+  snapshot_name = "talos-${var.talos_version}"
 }
 
 build {
@@ -39,7 +55,8 @@ build {
 
   provisioner "shell" {
     inline = [
-      "wget -O /tmp/talos.raw.xz https://github.com/siderolabs/talos/releases/download/v1.7.0/hcloud-amd64.raw.xz",
+      "apt-get install -y wget xz-utils",
+      "wget -O /tmp/talos.raw.xz ${local.image_url}",
       "xz -d /tmp/talos.raw.xz",
       "dd if=/tmp/talos.raw of=/dev/sda bs=4M",
       "sync",
@@ -48,50 +65,82 @@ build {
 }
 ```
 
-This boots a Debian server, writes the Talos raw image to disk, and Hetzner captures the result as a snapshot. You only need to do this once per Talos version.
+The key detail here is rescue mode. Instead of booting the Debian image normally, Packer boots into Hetzner's rescue system, which gives direct access to `/dev/sda`. The Talos image gets written straight to disk. You only need to do this once per Talos version.
+
+The long hash in the Image Factory URL is a schema ID that defines which extensions to include. You can generate your own at [factory.talos.dev](https://factory.talos.dev/).
 
 ### Step 2: Provision with Terraform
 
-Once you have the snapshot ID, Terraform provisions the nodes and generates machine configs. The key resource is the machine config — one for control plane nodes, one for workers:
+Terraform looks up the Packer snapshot by its labels and provisions the cluster infrastructure — network, firewall, placement groups, and servers:
 
 ```hcl
-resource "talos_machine_secrets" "this" {}
-
-data "talos_machine_configuration" "controlplane" {
-  cluster_name     = var.cluster_name
-  cluster_endpoint = "https://${hcloud_server.controlplane[0].ipv4_address}:6443"
-  machine_type     = "controlplane"
-  machine_secrets  = talos_machine_secrets.this.machine_secrets
+data "hcloud_image" "talos" {
+  with_selector     = "type=talos,version=${var.talos_version}"
+  with_architecture = "x86"
+  most_recent       = true
 }
 
-resource "talos_machine_configuration_apply" "controlplane" {
-  for_each             = hcloud_server.controlplane
-  client_configuration = talos_machine_secrets.this.client_configuration
-  machine_configuration_input = data.talos_machine_configuration.controlplane.machine_configuration
-  node = each.value.ipv4_address
+resource "hcloud_network" "cluster" {
+  name     = var.cluster_name
+  ip_range = var.network_cidr
+}
+
+resource "hcloud_firewall" "cluster" {
+  name = var.cluster_name
+
+  rule {
+    description = "Talos apid"
+    direction   = "in"
+    protocol    = "tcp"
+    port        = "50000"
+    source_ips  = var.admin_cidrs
+  }
+
+  rule {
+    description = "ICMP"
+    direction   = "in"
+    protocol    = "icmp"
+    source_ips  = ["0.0.0.0/0", "::/0"]
+  }
+}
+
+resource "hcloud_server" "control_plane" {
+  count       = var.control_plane_count
+  name        = "${var.cluster_name}-cp-${count.index}"
+  server_type = var.server_type
+  location    = var.location
+  image       = data.hcloud_image.talos.id
+  # ...
 }
 ```
 
-The `talos` Terraform provider handles bootstrapping the cluster, generating the kubeconfig, and waiting for the nodes to be ready. You end up with a fully configured cluster without ever SSHing into anything.
+Notice there's no Talos provider in this module. The Terraform module only provisions the Hetzner infrastructure — servers, networking, firewall rules, and an optional load balancer for the Kubernetes API on port 6443. Talos bootstrapping (generating machine configs, applying them, bootstrapping etcd) happens separately with `talosctl` or with the Talos Terraform provider in a consuming module.
+
+This separation keeps the infrastructure module focused and reusable. The module outputs control plane and worker IPs (both public and private), which you feed into whatever handles the Talos configuration step.
 
 ## Module Structure
 
-I keep this as a reusable Terraform module:
+The module is structured as a standard Terraform module:
 
 ```
-modules/talos-hcloud/
-  main.tf          # servers, firewall rules
-  talos.tf         # machine configs, bootstrap
-  variables.tf
-  outputs.tf       # kubeconfig, talosconfig
+terraform-hcloud-talos/
+  main.tf            # servers, network, firewall, placement groups
+  load_balancer.tf   # optional LB for Kubernetes API (port 6443)
+  variables.tf       # cluster_name, talos_version, counts, CIDRs
+  outputs.tf         # control plane/worker IPs (public, private, IPv6)
+  terraform.tf       # provider requirements
+  packer/
+    talos.pkr.hcl    # snapshot build definition
 ```
 
-The module outputs the kubeconfig and talosconfig so they can be fed into subsequent Terraform or used directly with `kubectl` / `talosctl`.
+Placement groups with spread policy ensure control plane nodes and workers land on different physical hosts. The private network (`172.16.16.0/20` by default) keeps inter-node traffic off the public internet.
 
 ## What I Learned
 
-The biggest friction point is the Talos image version vs cluster version. You can't bootstrap a Talos v1.7 image with a mismatched installer. Keep a variable for the Talos version and reference it everywhere.
+The biggest friction point is the Talos image version. The Packer snapshot version and the Talos installer version used during bootstrap must match. I keep a single `talos_version` variable referenced in both Packer and Terraform to avoid drift.
 
-Also: Talos nodes don't have a way to install arbitrary kernel modules by default. If you need something like WireGuard or specific storage drivers, you need a custom Talos image built with [Image Factory](https://factory.talos.dev/). For my setup, I need a few extensions, so I build a custom image URL and reference it in both Packer and the machine config.
+Talos nodes don't support arbitrary kernel modules out of the box. If you need something like WireGuard or specific storage drivers, you need a custom image from [Image Factory](https://factory.talos.dev/). That's why the Packer template uses a factory URL with a specific schema ID rather than the vanilla release image.
+
+The firewall is deliberately minimal — only port 50000 (Talos apid) from admin CIDRs and ICMP. Kubernetes API access (port 6443) goes through the optional load balancer or direct node access, depending on your setup.
 
 Once you get past the initial learning curve, operating Talos feels remarkably calm. Upgrades are `talosctl upgrade`, and you can watch the node drain, reboot, and rejoin without touching anything manually. For a cluster I don't want to babysit, that matters.
